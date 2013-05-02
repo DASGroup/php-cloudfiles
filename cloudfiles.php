@@ -134,18 +134,18 @@ class CF_Authentication
      * @param string $account  <i>Account name</i>
      * @param string $auth_host  <i>Authentication service URI</i>
      */
-    function __construct($username=NULL, $api_key=NULL, $account=NULL, $auth_host=US_AUTHURL)
+    function __construct($username=null, $api_key=null, $account=null, $auth_host=US_AUTHURL)
     {
 
-        $this->dbug = False;
+        $this->dbug = false;
         $this->username = $username;
         $this->api_key = $api_key;
         $this->account_name = $account;
         $this->auth_host = $auth_host;
 
-        $this->storage_url = NULL;
-        $this->cdnm_url = NULL;
-        $this->auth_token = NULL;
+        $this->storage_url = null;
+        $this->cdnm_url = null;
+        $this->auth_token = null;
 
         $this->cfs_http = new CF_Http(DEFAULT_CF_API_VERSION);
     }
@@ -171,7 +171,7 @@ class CF_Authentication
      *
      * @param string $path Specify path to CA bundle (default to included)
      */
-    function ssl_use_cabundle($path=NULL)
+    function ssl_use_cabundle($path=null)
     {
         $this->cfs_http->ssl_use_cabundle($path);
     }
@@ -220,7 +220,7 @@ class CF_Authentication
         $this->storage_url = $surl;
         $this->cdnm_url = $curl;
         $this->auth_token = $atoken;
-        return True;
+        return true;
     }
 	/**
 	 * Use Cached Token and Storage URL's rather then grabbing from the Auth System
@@ -244,18 +244,18 @@ class CF_Authentication
         if(!$storage_url || !$cdnm_url)
         {
                 throw new SyntaxException("Missing Required Interface URL's!");
-                return False;
+                return false;
         }
         if(!$auth_token)
         {
                 throw new SyntaxException("Missing Auth Token!");
-                return False;
+                return false;
         }
 
         $this->storage_url = $storage_url;
         $this->cdnm_url    = $cdnm_url;
         $this->auth_token  = $auth_token;
-        return True;
+        return true;
     }
 	/**
          * Grab Cloud Files info to be Cached for later use with the load_cached_credentials method.
@@ -292,9 +292,9 @@ class CF_Authentication
     function authenticated()
     {
         if (!($this->storage_url || $this->cdnm_url) || !$this->auth_token) {
-            return False;
+            return false;
         }
-        return True;
+        return true;
     }
 
     /**
@@ -377,10 +377,10 @@ class CF_Connection
      * @param boolean $servicenet enable/disable access via Rackspace servicenet.
      * @throws AuthenticationException not authenticated
      */
-    function __construct($cfs_auth, $servicenet=False)
+    function __construct($cfs_auth, $servicenet=false)
     {
         if (isset($_ENV['RACKSPACE_SERVICENET']))
-            $servicenet=True;
+            $servicenet=true;
         $this->cfs_http = new CF_Http(DEFAULT_CF_API_VERSION);
         $this->cfs_auth = $cfs_auth;
         if (!$this->cfs_auth->authenticated()) {
@@ -389,7 +389,7 @@ class CF_Connection
             throw new AuthenticationException($e);
         }
         $this->cfs_http->setCFAuth($this->cfs_auth, $servicenet=$servicenet);
-        $this->dbug = False;
+        $this->dbug = false;
     }
 
     /**
@@ -475,7 +475,7 @@ class CF_Connection
      * @throws SyntaxException invalid name
      * @throws InvalidResponseException unexpected response
      */
-    function create_container($container_name=NULL)
+    function create_container($container_name=null)
     {
         if ($container_name != "0" and !isset($container_name))
             throw new SyntaxException("Container name not set.");
@@ -483,7 +483,7 @@ class CF_Connection
         if (!isset($container_name) or $container_name == "") 
             throw new SyntaxException("Container name not set.");
 
-        if (strpos($container_name, "/") !== False) {
+        if (strpos($container_name, "/") !== false) {
             $r = "Container name '".$container_name;
             $r .= "' cannot contain a '/' character.";
             throw new SyntaxException($r);
@@ -532,9 +532,9 @@ class CF_Connection
      * @throws NonEmptyContainerException container not empty
      * @throws NoSuchContainerException remote container does not exist
      */
-    function delete_container($container=NULL)
+    function delete_container($container=null)
     {
-        $container_name = NULL;
+        $container_name = null;
         
         if (is_object($container)) {
             if (get_class($container) == "CF_Container") {
@@ -569,7 +569,7 @@ class CF_Connection
                 "Invalid response (".$return_code."): "
                 . $this->cfs_http->get_error());
         }
-        return True;
+        return true;
     }
 
     /**
@@ -594,7 +594,7 @@ class CF_Connection
      * @throws NoSuchContainerException thrown if no remote Container
      * @throws InvalidResponseException unexpected response
      */
-    function get_container($container_name=NULL)
+    function get_container($container_name=null)
     {
         list($status, $reason, $count, $bytes) =
                 $this->cfs_http->head_container($container_name);
@@ -636,7 +636,7 @@ class CF_Connection
      * @return array An array of CF_Container instances
      * @throws InvalidResponseException unexpected response
      */
-    function get_containers($limit=0, $marker=NULL)
+    function get_containers($limit=0, $marker=null)
     {
         list($status, $reason, $container_info) =
                 $this->cfs_http->list_containers_info($limit, $marker);
@@ -650,7 +650,7 @@ class CF_Connection
         $containers = array();
         foreach ($container_info as $name => $info) {
             $containers[] = new CF_Container($this->cfs_auth, $this->cfs_http,
-                $info['name'], $info["count"], $info["bytes"], False);
+                $info['name'], $info["count"], $info["bytes"], false);
         }
         return $containers;
     }
@@ -680,7 +680,7 @@ class CF_Connection
      * @return array list of remote Containers
      * @throws InvalidResponseException unexpected response
      */
-    function list_containers($limit=0, $marker=NULL)
+    function list_containers($limit=0, $marker=null)
     {
         list($status, $reason, $containers) =
             $this->cfs_http->list_containers($limit, $marker);
@@ -728,7 +728,7 @@ class CF_Connection
      * @return array nested array structure of Container info
      * @throws InvalidResponseException unexpected response
      */
-    function list_containers_info($limit=0, $marker=NULL)
+    function list_containers_info($limit=0, $marker=null)
     {
         list($status, $reason, $container_info) = 
                 $this->cfs_http->list_containers_info($limit, $marker);
@@ -770,7 +770,7 @@ class CF_Connection
      * @return array list of published Container names
      * @throws InvalidResponseException unexpected response
      */
-    function list_public_containers($enabled_only=False)
+    function list_public_containers($enabled_only=false)
     {
         list($status, $reason, $containers) =
                 $this->cfs_http->list_cdn_containers($enabled_only);
@@ -882,7 +882,7 @@ class CF_Connection
      *
      * @param string $path Specify path to CA bundle (default to included)
      */
-    function ssl_use_cabundle($path=NULL)
+    function ssl_use_cabundle($path=null)
     {
         $this->cfs_http->ssl_use_cabundle($path);
     }
@@ -944,13 +944,13 @@ class CF_Container
      * @throws SyntaxException invalid Container name
      */
     function __construct(&$cfs_auth, &$cfs_http, $name, $count=0,
-        $bytes=0, $docdn=True)
+        $bytes=0, $docdn=true)
     {
         if (strlen($name) > MAX_CONTAINER_NAME_LEN) {
             throw new SyntaxException("Container name exceeds "
                 . "maximum allowed length.");
         }
-        if (strpos($name, "/") !== False) {
+        if (strpos($name, "/") !== false) {
             throw new SyntaxException(
                 "Container names cannot contain a '/' character.");
         }
@@ -960,15 +960,15 @@ class CF_Container
         $this->object_count = $count;
         $this->bytes_used = $bytes;
         $this->metadata = array();
-        $this->cdn_enabled = NULL;
-        $this->cdn_uri = NULL;
-        $this->cdn_ssl_uri = NULL;
-        $this->cdn_streaming_uri = NULL;
-        $this->cdn_ttl = NULL;
-        $this->cdn_log_retention = NULL;
-        $this->cdn_acl_user_agent = NULL;
-        $this->cdn_acl_referrer = NULL;
-        if ($this->cfs_http->getCDNMUrl() != NULL && $docdn) {
+        $this->cdn_enabled = null;
+        $this->cdn_uri = null;
+        $this->cdn_ssl_uri = null;
+        $this->cdn_streaming_uri = null;
+        $this->cdn_ttl = null;
+        $this->cdn_log_retention = null;
+        $this->cdn_acl_user_agent = null;
+        $this->cdn_acl_referrer = null;
+        if ($this->cfs_http->getCDNMUrl() != null && $docdn) {
             $this->_cdn_initialize();
         }
     }
@@ -984,18 +984,18 @@ class CF_Container
     {
         $me = sprintf("name: %s, count: %.0f, bytes: %.0f",
             $this->name, $this->object_count, $this->bytes_used);
-        if ($this->cfs_http->getCDNMUrl() != NULL) {
+        if ($this->cfs_http->getCDNMUrl() != null) {
             $me .= sprintf(", cdn: %s, cdn uri: %s, cdn ttl: %.0f, logs retention: %s",
                 $this->is_public() ? "Yes" : "No",
                 $this->cdn_uri, $this->cdn_ttl,
                 $this->cdn_log_retention ? "Yes" : "No"
                 );
 
-            if ($this->cdn_acl_user_agent != NULL) {
+            if ($this->cdn_acl_user_agent != null) {
                 $me .= ", cdn acl user agent: " . $this->cdn_acl_user_agent;
             }
 
-            if ($this->cdn_acl_referrer != NULL) {
+            if ($this->cdn_acl_referrer != null) {
                 $me .= ", cdn acl referrer: " . $this->cdn_acl_referrer;
             }
             
@@ -1032,11 +1032,11 @@ class CF_Container
      */
     function make_public($ttl=86400)
     {
-        if ($this->cfs_http->getCDNMUrl() == NULL) {
+        if ($this->cfs_http->getCDNMUrl() == null) {
             throw new CDNNotEnabledException(
                 "Authentication response did not indicate CDN availability");
         }
-        if ($this->cdn_uri != NULL) {
+        if ($this->cdn_uri != null) {
             # previously published, assume we're setting new attributes
             list($status, $reason, $cdn_uri, $cdn_ssl_uri) =
                 $this->cfs_http->update_cdn_container($this->name,$ttl,
@@ -1065,11 +1065,11 @@ class CF_Container
             throw new InvalidResponseException(
                 "Invalid response (".$status."): ".$this->cfs_http->get_error());
         }
-        $this->cdn_enabled = True;
+        $this->cdn_enabled = true;
         $this->cdn_ttl = $ttl;
         $this->cdn_ssl_uri = $cdn_ssl_uri;
         $this->cdn_uri = $cdn_uri;
-        $this->cdn_log_retention = False;
+        $this->cdn_log_retention = false;
         $this->cdn_acl_user_agent = "";
         $this->cdn_acl_referrer = "";
         return $this->cdn_uri;
@@ -1103,7 +1103,7 @@ class CF_Container
             throw new InvalidResponseException(
                 "Invalid response (".$status."): ".$this->cfs_http->get_error());
         } 
-        return True;
+        return true;
     }
     /**
      * Enable ACL restriction by User Agent for this container.
@@ -1126,7 +1126,7 @@ class CF_Container
      * @throws InvalidResponseException unexpected response
      */
     function acl_user_agent($cdn_acl_user_agent="") {
-        if ($this->cfs_http->getCDNMUrl() == NULL) {
+        if ($this->cfs_http->getCDNMUrl() == null) {
             throw new CDNNotEnabledException(
                 "Authentication response did not indicate CDN availability");
         }
@@ -1142,7 +1142,7 @@ class CF_Container
                 "Invalid response (".$status."): ".$this->cfs_http->get_error());
         }
         $this->cdn_acl_user_agent = $cdn_acl_user_agent;
-        return True;
+        return true;
     }
 
     /**
@@ -1166,7 +1166,7 @@ class CF_Container
      * @throws InvalidResponseException unexpected response
      */
     function acl_referrer($cdn_acl_referrer="") {
-        if ($this->cfs_http->getCDNMUrl() == NULL) {
+        if ($this->cfs_http->getCDNMUrl() == null) {
             throw new CDNNotEnabledException(
                 "Authentication response did not indicate CDN availability");
         }
@@ -1182,7 +1182,7 @@ class CF_Container
                 "Invalid response (".$status."): ".$this->cfs_http->get_error());
         }
         $this->cdn_acl_referrer = $cdn_acl_referrer;
-        return True;
+        return true;
     }
     
     /**
@@ -1211,8 +1211,8 @@ class CF_Container
      * @throws AuthenticationException if auth token is not valid/expired
      * @throws InvalidResponseException unexpected response
      */
-    function log_retention($cdn_log_retention=False) {
-        if ($this->cfs_http->getCDNMUrl() == NULL) {
+    function log_retention($cdn_log_retention=false) {
+        if ($this->cfs_http->getCDNMUrl() == null) {
             throw new CDNNotEnabledException(
                 "Authentication response did not indicate CDN availability");
         }
@@ -1228,7 +1228,7 @@ class CF_Container
                 "Invalid response (".$status."): ".$this->cfs_http->get_error());
         }
         $this->cdn_log_retention = $cdn_log_retention;
-        return True;
+        return true;
     }
     
     /**
@@ -1263,7 +1263,7 @@ class CF_Container
      */
     function make_private()
     {
-        if ($this->cfs_http->getCDNMUrl() == NULL) {
+        if ($this->cfs_http->getCDNMUrl() == null) {
             throw new CDNNotEnabledException(
                 "Authentication response did not indicate CDN availability");
         }
@@ -1275,15 +1275,15 @@ class CF_Container
             throw new InvalidResponseException(
                 "Invalid response (".$status."): ".$this->cfs_http->get_error());
         }
-        $this->cdn_enabled = False;
-        $this->cdn_ttl = NULL;
-        $this->cdn_uri = NULL;
-        $this->cdn_ssl_uri = NULL;
-        $this->cdn_streaming_uri - NULL;
-        $this->cdn_log_retention = NULL;
-        $this->cdn_acl_user_agent = NULL;
-        $this->cdn_acl_referrer = NULL;
-        return True;
+        $this->cdn_enabled = false;
+        $this->cdn_ttl = null;
+        $this->cdn_uri = null;
+        $this->cdn_ssl_uri = null;
+        $this->cdn_streaming_uri - null;
+        $this->cdn_log_retention = null;
+        $this->cdn_acl_user_agent = null;
+        $this->cdn_acl_referrer = null;
+        return true;
     }
 
     /**
@@ -1309,7 +1309,7 @@ class CF_Container
      */
     function is_public()
     {
-        return $this->cdn_enabled == True ? True : False;
+        return $this->cdn_enabled == true ? true : false;
     }
 
     /**
@@ -1335,7 +1335,7 @@ class CF_Container
      * @param string $obj_name name of storage Object
      * @return obj CF_Object instance
      */
-    function create_object($obj_name=NULL)
+    function create_object($obj_name=null)
     {
         return new CF_Object($this, $obj_name);
     }
@@ -1364,9 +1364,9 @@ class CF_Container
      * @param string $obj_name name of storage Object
      * @return obj CF_Object instance
      */
-    function get_object($obj_name=NULL)
+    function get_object($obj_name=null)
     {
-        return new CF_Object($this, $obj_name, True);
+        return new CF_Object($this, $obj_name, true);
     }
 
     /**
@@ -1413,7 +1413,7 @@ class CF_Container
      * @return array array of strings
      * @throws InvalidResponseException unexpected response
      */
-    function list_objects($limit=0, $marker=NULL, $prefix=NULL, $path=NULL)
+    function list_objects($limit=0, $marker=null, $prefix=null, $path=null)
     {
         list($status, $reason, $obj_list) =
             $this->cfs_http->list_objects($this->name, $limit,
@@ -1472,7 +1472,7 @@ class CF_Container
      * @return array array of strings
      * @throws InvalidResponseException unexpected response
      */
-    function get_objects($limit=0, $marker=NULL, $prefix=NULL, $path=NULL, $delimiter=NULL)
+    function get_objects($limit=0, $marker=null, $prefix=null, $path=null, $delimiter=null)
     {
         list($status, $reason, $obj_array) =
             $this->cfs_http->get_objects($this->name, $limit,
@@ -1487,7 +1487,7 @@ class CF_Container
         $objects = array();
         foreach ($obj_array as $obj) {
           if(!isset($obj['subdir'])) {
-            $tmp = new CF_Object($this, $obj["name"], False, False);
+            $tmp = new CF_Object($this, $obj["name"], false, false);
             $tmp->content_type = $obj["content_type"];
             $tmp->content_length = (float) $obj["bytes"];
             $tmp->set_etag($obj["hash"]);
@@ -1527,9 +1527,9 @@ class CF_Container
      * @throws NoSuchObjectException remote Object does not exist
      * @throws InvalidResponseException unexpected response
      */
-    function copy_object_to($obj,$container_target,$dest_obj_name=NULL,$metadata=NULL,$headers=NULL)
+    function copy_object_to($obj,$container_target,$dest_obj_name=null,$metadata=null,$headers=null)
     {
-        $obj_name = NULL;
+        $obj_name = null;
         if (is_object($obj)) {
             if (get_class($obj) == "CF_Object") {
                 $obj_name = $obj->name;
@@ -1542,11 +1542,11 @@ class CF_Container
             throw new SyntaxException("Object name not set.");
         }
 
-				if ($dest_obj_name === NULL) {
+				if ($dest_obj_name === null) {
             $dest_obj_name = $obj_name;
 				}
 
-        $container_name_target = NULL;
+        $container_name_target = null;
         if (is_object($container_target)) {
             if (get_class($container_target) == "CF_Container") {
                 $container_name_target = $container_target->name;
@@ -1601,9 +1601,9 @@ class CF_Container
      * @throws NoSuchObjectException remote Object does not exist
      * @throws InvalidResponseException unexpected response
      */
-    function copy_object_from($obj,$container_source,$dest_obj_name=NULL,$metadata=NULL,$headers=NULL)
+    function copy_object_from($obj,$container_source,$dest_obj_name=null,$metadata=null,$headers=null)
     {
-        $obj_name = NULL;
+        $obj_name = null;
         if (is_object($obj)) {
             if (get_class($obj) == "CF_Object") {
                 $obj_name = $obj->name;
@@ -1616,11 +1616,11 @@ class CF_Container
             throw new SyntaxException("Object name not set.");
         }
 
-				if ($dest_obj_name === NULL) {
+				if ($dest_obj_name === null) {
             $dest_obj_name = $obj_name;
 				}
 
-        $container_name_source = NULL;
+        $container_name_source = null;
         if (is_object($container_source)) {
             if (get_class($container_source) == "CF_Container") {
                 $container_name_source = $container_source->name;
@@ -1676,7 +1676,7 @@ class CF_Container
      * @throws NoSuchObjectException remote Object does not exist
      * @throws InvalidResponseException unexpected response
      */
-    function move_object_to($obj,$container_target,$dest_obj_name=NULL,$metadata=NULL,$headers=NULL)
+    function move_object_to($obj,$container_target,$dest_obj_name=null,$metadata=null,$headers=null)
     {
     	$retVal = false;
 
@@ -1716,7 +1716,7 @@ class CF_Container
      * @throws NoSuchObjectException remote Object does not exist
      * @throws InvalidResponseException unexpected response
      */
-    function move_object_from($obj,$container_source,$dest_obj_name=NULL,$metadata=NULL,$headers=NULL)
+    function move_object_from($obj,$container_source,$dest_obj_name=null,$metadata=null,$headers=null)
     {
     	$retVal = false;
 
@@ -1753,9 +1753,9 @@ class CF_Container
      * @throws NoSuchObjectException remote Object does not exist
      * @throws InvalidResponseException unexpected response
      */
-    function delete_object($obj,$container=NULL)
+    function delete_object($obj,$container=null)
     {
-        $obj_name = NULL;
+        $obj_name = null;
         if (is_object($obj)) {
             if (get_class($obj) == "CF_Object") {
                 $obj_name = $obj->name;
@@ -1768,9 +1768,9 @@ class CF_Container
             throw new SyntaxException("Object name not set.");
         }
 
-        $container_name = NULL;
+        $container_name = null;
 
-        if($container === NULL) {
+        if($container === null) {
         	$container_name = $this->name;
         }
         else {
@@ -1800,7 +1800,7 @@ class CF_Container
             throw new InvalidResponseException(
                 "Invalid response (".$status."): ".$this->cfs_http->get_error());
         }
-        return True;
+        return true;
     }
 
     /**
@@ -1902,7 +1902,7 @@ class CF_Object
      * @param string $name name of Object
      * @param boolean $force_exists if set, throw an error if Object doesn't exist
      */
-    function __construct(&$container, $name, $force_exists=False, $dohead=True)
+    function __construct(&$container, $name, $force_exists=false, $dohead=true)
     {
         if ($name[0] == "/") {
             $r = "Object name '".$name;
@@ -1915,14 +1915,14 @@ class CF_Object
         }
         $this->container = $container;
         $this->name = $name;
-        $this->etag = NULL;
-        $this->_etag_override = False;
-        $this->last_modified = NULL;
-        $this->content_type = NULL;
+        $this->etag = null;
+        $this->_etag_override = false;
+        $this->last_modified = null;
+        $this->content_type = null;
         $this->content_length = 0;
         $this->metadata = array();
         $this->headers = array();
-        $this->manifest = NULL;
+        $this->manifest = null;
         if ($dohead) {
             if (!$this->_initialize() && $force_exists) {
                 throw new NoSuchObjectException("No such object '".$name."'");
@@ -1977,7 +1977,7 @@ class CF_Object
                 
             if ($finfo) {
 
-                if (is_file((string)$handle))
+                if (@is_file((string)$handle))
                     $ct = @finfo_file($finfo, $handle);
                 else 
                     $ct = @finfo_buffer($finfo, $handle);
@@ -1998,14 +1998,14 @@ class CF_Object
             }
         }
 
-        if (!$this->content_type && (string)is_file($handle) && function_exists("mime_content_type")) {
+        if (!$this->content_type && @is_file((string)$handle) && function_exists("mime_content_type")) {
             $this->content_type = @mime_content_type($handle);
         }
 
         if (!$this->content_type) {
             throw new BadContentTypeException("Required Content-Type not set");
         }
-        return True;
+        return true;
     }
     
     /**
@@ -2031,7 +2031,7 @@ class CF_Object
         if ($this->container->cdn_enabled) {
             return $this->container->cdn_uri . "/" . $this->name;
         }
-        return NULL;
+        return null;
     }
 
        /**
@@ -2057,7 +2057,7 @@ class CF_Object
         if ($this->container->cdn_enabled) {
             return $this->container->cdn_ssl_uri . "/" . $this->name;
         }
-        return NULL;
+        return null;
     }
     /**
      * String representation of the Object's public Streaming URI
@@ -2082,7 +2082,7 @@ class CF_Object
         if ($this->container->cdn_enabled) {
             return $this->container->cdn_streaming_uri . "/" . $this->name;
         }
-        return NULL;
+        return null;
     }
 
     /**
@@ -2182,7 +2182,7 @@ class CF_Object
             throw new InvalidResponseException("Invalid response (".$status."): "
                 .$reason);
         }
-        return True;
+        return true;
     }
 
     /**
@@ -2232,9 +2232,9 @@ class CF_Object
                 throw new InvalidResponseException("Invalid response ("
                     .$status."): ".$this->container->cfs_http->get_error());
             }
-            return True;
+            return true;
         }
-        return False;
+        return false;
     }
     /**
      * Store new Object manifest
@@ -2297,7 +2297,7 @@ class CF_Object
      * @throws MisMatchedChecksumException $verify is set and checksums unequal
      * @throws InvalidResponseException unexpected response
      */
-    function write($data=NULL, $bytes=0, $verify=True)
+    function write($data=null, $bytes=0, $verify=true)
     {
         if (!$data && !is_string($data)) {
             throw new SyntaxException("Missing data source.");
@@ -2310,10 +2310,10 @@ class CF_Object
                 $this->etag = $this->compute_md5sum($data);
             }
         } else {
-            $this->etag = NULL;
+            $this->etag = null;
         }
 
-        $close_fh = False;
+        $close_fh = false;
         if (!is_resource($data)) {
             # A hack to treat string data as a file handle.  php://memory feels
             # like a better option, but it seems to break on Windows so use
@@ -2323,7 +2323,7 @@ class CF_Object
             #$fp = fopen("php://memory", "wb+");
             fwrite($fp, $data, strlen($data));
             rewind($fp);
-            $close_fh = True;
+            $close_fh = true;
             $this->content_length = (float) strlen($data);
             if ($this->content_length > MAX_OBJECT_SIZE) {
                 throw new SyntaxException("Data exceeds maximum object size");
@@ -2361,7 +2361,7 @@ class CF_Object
             $this->etag = $etag;
         }
         if ($close_fh) { fclose($fp); }
-        return True;
+        return true;
     }
 
     /**
@@ -2393,7 +2393,7 @@ class CF_Object
      * @throws InvalidResponseException unexpected response
      * @throws IOException error opening file
      */
-    function load_from_filename($filename, $verify=True)
+    function load_from_filename($filename, $verify=true)
     {
         $fp = @fopen($filename, "r");
         if (!$fp) {
@@ -2411,7 +2411,7 @@ class CF_Object
         
         $this->write($fp, $size, $verify);
         fclose($fp);
-        return True;
+        return true;
     }
 
     /**
@@ -2479,7 +2479,7 @@ class CF_Object
             throw new InvalidResponseException(
                 "Invalid response (".$status."): ".$this->container->cfs_http->get_error());
         }
-        return True;
+        return true;
     }
 
     /**
@@ -2494,7 +2494,7 @@ class CF_Object
     function set_etag($etag)
     {
         $this->etag = $etag;
-        $this->_etag_override = True;
+        $this->_etag_override = true;
     }
 
     /**
@@ -2534,7 +2534,7 @@ class CF_Object
             }
             $md5 = hash_final($ctx, false);
             rewind($data);
-        } elseif ((string)is_file($data)) {
+        } elseif (@is_file((string)$data)) {
             $md5 = md5_file($data);
         } else {
             $md5 = md5($data);
@@ -2554,7 +2554,7 @@ class CF_Object
         #    return $this->_initialize();
         #}
         if ($status == 404) {
-            return False;
+            return false;
         }
         if ($status < 200 || $status > 299) {
             throw new InvalidResponseException("Invalid response (".$status."): "
@@ -2567,7 +2567,7 @@ class CF_Object
         $this->metadata = $metadata;
         $this->headers = $headers;
         $this->manifest = $manifest;
-        return True;
+        return true;
     }
      /**
      * Generate a Temp Url for a object
